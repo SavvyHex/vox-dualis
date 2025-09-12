@@ -14,10 +14,13 @@ load_dotenv()
 # Initialize FastAPI app
 app = FastAPI(title="Vox Dualis - Ethical Debate Arena", version="1.0.0")
 
+# Get frontend URLs from environment (for flexible deployment)
+FRONTEND_URLS = os.getenv("FRONTEND_URLS").split(",")
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Your frontend URL
+    allow_origins=FRONTEND_URLS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
