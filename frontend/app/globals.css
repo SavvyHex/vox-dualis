@@ -52,6 +52,22 @@ body {
   border-bottom: 4px solid #fbbf24;
   background: rgba(41, 37, 36, 0.8);
   backdrop-filter: blur(8px);
+  padding: 1.5rem 0;
+}
+
+.vox-header-container {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vox-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .vox-logo {
@@ -62,6 +78,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.vox-logo span {
+  color: white;
+  font-weight: bold;
+  font-size: 1.25rem;
 }
 
 .vox-logo-text {
