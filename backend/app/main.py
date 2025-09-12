@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 import google.generativeai as genai
@@ -80,7 +81,9 @@ mediator_agent = DebateAgent(
 )
 
 # Pydantic models
-#commit
+class DebateRequest(BaseModel):
+    topic: str
+
 class DebateResponse(BaseModel):
     topic: str
     pro_argument: str
@@ -126,3 +129,6 @@ async def generate_debate(request: DebateRequest):
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "message": "Vox Dualis backend is running"}
+
+# To run the app, use the command:
+# uvicorn app.main:app --host   
