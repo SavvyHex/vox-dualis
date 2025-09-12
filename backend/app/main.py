@@ -81,44 +81,48 @@ mediator_agent = DebateAgent(
 
 # Pydantic models
 #commit
-class DebateRequest(BaseModel):
+class DebateResponse(BaseModel):
     topic: str
+    pro_argument: str
+    con_argument: str
+    mediator_analysis: str
+    summary: str
 
-@app.post("/debate")
-def generate_debate(request: DebateRequest):
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
-    
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {GEMINI_API_KEY}"
-    }
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to Vox Dualis - The Ethical Debate Arena"}
 
-    # Structured prompt asking for JSON
-    payload = {
-        "contents": [{
-            "parts": [{
-                "text": (
-                    f"Debate the topic: {request.topic}. "
-                    f"Return the result strictly in JSON format with this structure:\n\n"
-                    f"{{\n"
-                    f'  "topic": "{request.topic}",\n'
-                    f'  "pro": "Arguments in favor",\n'
-                    f'  "con": "Arguments against"\n'
-                    f"}}"
-                )
-            }]
-        }]
-    }
-
-    response = requests.post(url, headers=headers, json=payload)
-    data = response.json()
-
-    # Extract Gemini output
-    debate_text = data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
-
+@app.post("/debate", response_model=DebateResponse)
+async def generate_debate(request: DebateRequest):
     try:
-        debate_json = eval(debate_text)  # quick parse (safer: use json.loads if valid JSON)
-    except Exception:
-        debate_json = {"topic": request.topic, "pro": "N/A", "con": "N/A", "raw": debate_text}
+        topic = request.topic.strip()
+        if not topic:
+            raise HTTPException(status_code=400, detail="Topic cannot be empty")
+        
+        # Generate arguments concurrently for efficiency
+        pro_task = pro_agent.generate_argument(topic)
+        con_task = con_agent.generate_argument(topic)
+        
+        pro_argument, con_argument = await asyncio.gather(pro_task, con_task)
+        
+        # Generate mediator analysis based on both arguments
+        mediator_context = f"Pro argument: {pro_argument}\n\nCon argument: {con_argument}"
+        mediator_analysis = await mediator_agent.generate_argument(topic, mediator_context)
+        
+        # Create a summary
+        summary = f"The Senate has heard compelling arguments on '{topic}'. The Champion advocates for the position while the Challenger raises important concerns. The Wise Judge provides balanced analysis for your consideration."
+        
+        return DebateResponse(
+            topic=topic,
+            pro_argument=pro_argument,
+            con_argument=con_argument,
+            mediator_analysis=mediator_analysis,
+            summary=summary
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-    return debate_json
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "message": "Vox Dualis backend is running"}
