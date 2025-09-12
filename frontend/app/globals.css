@@ -40,6 +40,7 @@ body {
 .vox-page-bg {
   min-height: 100vh;
   background: linear-gradient(to bottom, #0c0a09, #292524, #92400e);
+  padding-top: 120px; /* Account for fixed header height */
 }
 
 .vox-container {
@@ -49,19 +50,25 @@ body {
 }
 
 .vox-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   border-bottom: 4px solid #fbbf24;
-  background: rgba(41, 37, 36, 0.8);
-  backdrop-filter: blur(8px);
+  background: rgba(41, 37, 36, 0.5);
+  backdrop-filter: blur(16px);
   padding: 1.5rem 0;
 }
 
 .vox-header-container {
-  max-width: 72rem;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+  max-width: none;
+  margin: 0;
+  padding: 0 3rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .vox-header-brand {

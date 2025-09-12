@@ -28,8 +28,7 @@ export default function Navbar() {
           >
             Arena
           </Link>
-          <a href="#about" className="vox-nav-link">About</a>
-          <a href="#philosophy" className="vox-nav-link">Philosophy</a>
+          <Link href="#about" className="vox-nav-link">About</Link>
         </nav>
       </div>
     </header>

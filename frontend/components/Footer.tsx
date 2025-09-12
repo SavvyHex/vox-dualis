@@ -25,8 +25,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li><Link href="/" className="vox-footer-link">Home</Link></li>
               <li><Link href="/arena" className="vox-footer-link">Arena</Link></li>
-              <li><a href="#philosophy" className="vox-footer-link">Philosophy</a></li>
-              <li><a href="#about" className="vox-footer-link">About</a></li>
+              <li><Link href="#about" className="vox-footer-link">About</Link></li>
             </ul>
           </div>
           
