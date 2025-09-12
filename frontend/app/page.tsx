@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 via-stone-100 to-amber-100 dark:from-stone-900 dark:via-stone-800 dark:to-amber-900">
@@ -43,9 +45,9 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
+            <Link href="/arena" className="bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
               Enter the Arena
-            </button>
+            </Link>
             <button className="border-2 border-amber-600 dark:border-amber-400 text-amber-600 dark:text-amber-400 hover:bg-amber-600 hover:text-white dark:hover:bg-amber-400 dark:hover:text-stone-900 font-bold py-4 px-8 rounded-lg transition-all duration-200">
               Learn More
             </button>
