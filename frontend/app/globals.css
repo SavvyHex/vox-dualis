@@ -2,15 +2,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --amber-50: #fffbeb;
+  --amber-100: #fef3c7;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --amber-600: #d97706;
+  --amber-700: #b45309;
+  --stone-100: #f5f5f4;
+  --stone-300: #d6d3d1;
+  --stone-400: #a8a29e;
+  --stone-500: #78716c;
+  --stone-600: #57534e;
+  --stone-700: #44403c;
+  --stone-800: #292524;
+  --stone-900: #1c1917;
+  --stone-950: #0c0a09;
 }
 
 body {
@@ -19,10 +27,361 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Typography Classes */
 .font-roman {
   font-family: 'Cinzel', serif;
 }
 
 .font-serif {
   font-family: 'EB Garamond', serif;
+}
+
+/* Common UI Component Classes - Dark Mode Default */
+.vox-page-bg {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #0c0a09, #292524, #92400e);
+}
+
+.vox-container {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.vox-header {
+  border-bottom: 4px solid #fbbf24;
+  background: rgba(41, 37, 36, 0.8);
+  backdrop-filter: blur(8px);
+}
+
+.vox-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #fbbf24;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vox-logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fbbf24;
+  font-family: 'Cinzel', serif;
+}
+
+.vox-nav {
+  display: none;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .vox-nav {
+    display: flex;
+  }
+}
+
+.vox-nav-link {
+  color: #d6d3d1;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.vox-nav-link:hover {
+  color: #fbbf24;
+}
+
+.vox-nav-link-active {
+  color: #fbbf24;
+  font-weight: 500;
+}
+
+.vox-btn-primary {
+  background-color: #f59e0b;
+  color: white;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.vox-btn-primary:hover {
+  background-color: #d97706;
+  transform: scale(1.05);
+}
+
+.vox-btn-secondary {
+  border: 2px solid #fbbf24;
+  color: #fbbf24;
+  background-color: transparent;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.vox-btn-secondary:hover {
+  background-color: #fbbf24;
+  color: #1c1917;
+}
+
+.vox-card {
+  background: rgba(41, 37, 36, 0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  border: 1px solid #92400e;
+  transition: box-shadow 0.3s;
+}
+
+.vox-card:hover {
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+}
+
+.vox-arena-interface {
+  background: rgba(41, 37, 36, 0.8);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  border: 4px solid rgba(251, 191, 36, 0.3);
+  padding: 3rem;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+}
+
+.vox-input {
+  width: 100%;
+  height: 8rem;
+  padding: 1.5rem;
+  font-size: 1.125rem;
+  border: 2px solid #92400e;
+  border-radius: 0.75rem;
+  background-color: #44403c;
+  color: #f5f5f4;
+  font-family: 'EB Garamond', serif;
+  resize: none;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.vox-input:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.5);
+}
+
+.vox-input::placeholder {
+  color: #a8a29e;
+}
+
+.vox-title-large {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #f5f5f4;
+  font-family: 'Cinzel', serif;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .vox-title-large {
+    font-size: 4rem;
+  }
+}
+
+.vox-subtitle {
+  font-size: 1.25rem;
+  color: #d6d3d1;
+  font-style: italic;
+  font-family: 'EB Garamond', serif;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .vox-subtitle {
+    font-size: 1.5rem;
+  }
+}
+
+.vox-text-accent {
+  color: #fbbf24;
+}
+
+.vox-footer {
+  background-color: #1c1917;
+  color: #d6d3d1;
+  padding: 2rem 0;
+}
+
+.vox-icon-container {
+  display: inline-block;
+  padding: 1.5rem;
+  background: rgba(251, 191, 36, 0.1);
+  border-radius: 50%;
+  margin-bottom: 2rem;
+}
+
+.vox-icon-large {
+  width: 6rem;
+  height: 6rem;
+  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.vox-icon-medium {
+  width: 5rem;
+  height: 5rem;
+  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.vox-label {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #f5f5f4;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+}
+
+.vox-character-count {
+  font-size: 0.875rem;
+  color: #a8a29e;
+  text-align: right;
+  margin-top: 0.5rem;
+}
+
+.vox-title-huge {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #f5f5f4;
+  font-family: 'Cinzel', serif;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .vox-title-huge {
+    font-size: 4.5rem;
+  }
+}
+
+.vox-feature-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #f5f5f4;
+  margin-bottom: 0.75rem;
+}
+
+.vox-feature-text {
+  color: #d6d3d1;
+}
+
+.vox-description {
+  font-size: 1.125rem;
+  color: #a8a29e;
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.vox-quote-section {
+  background: linear-gradient(to right, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+  border-radius: 1rem;
+  padding: 3rem;
+  text-align: center;
+  border: 1px solid #92400e;
+}
+
+.vox-quote-text {
+  font-size: 1.5rem;
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  color: #e7e5e4;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .vox-quote-text {
+    font-size: 1.875rem;
+  }
+}
+
+.vox-quote-cite {
+  color: #fbbf24;
+  font-weight: 500;
+}
+
+.vox-footer-complex {
+  background-color: #1c1917;
+  color: #d6d3d1;
+  padding: 3rem 0;
+  margin-top: 5rem;
+}
+
+.vox-footer-logo {
+  width: 2rem;
+  height: 2rem;
+  background-color: #d97706;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vox-footer-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #fbbf24;
+}
+
+.vox-footer-text {
+  color: #a8a29e;
+  margin-bottom: 1rem;
+}
+
+.vox-footer-small {
+  font-size: 0.875rem;
+  color: #78716c;
+}
+
+.vox-footer-section-title {
+  font-weight: bold;
+  color: #fbbf24;
+  margin-bottom: 1rem;
+}
+
+.vox-footer-link {
+  color: #d6d3d1;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.vox-footer-link:hover {
+  color: #fbbf24;
+}
+
+.vox-footer-bottom {
+  border-top: 1px solid #44403c;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #78716c;
 }
