@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 
 export default function Arena() {
   const [debateTopic, setDebateTopic] = useState('');
@@ -15,23 +16,7 @@ export default function Arena() {
 
   return (
     <div className="vox-page-bg">
-      {/* Header */}
-      <header className="vox-header">
-        <div className="vox-container flex items-center justify-between py-4">
-          <div className="flex items-center space-x-3">
-            <div className="vox-logo">
-              <span className="text-white dark:text-stone-900 font-bold text-xl">V</span>
-            </div>
-            <h1 className="vox-logo-text">Vox Dualis</h1>
-          </div>
-          <nav className="vox-nav">
-            <Link href="/" className="vox-nav-link">Home</Link>
-            <Link href="/arena" className="vox-nav-link-active">Arena</Link>
-            <a href="#about" className="vox-nav-link">About</a>
-            <a href="#philosophy" className="vox-nav-link">Philosophy</a>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Arena Main Content */}
       <main className="flex-1 flex items-center justify-center px-6 py-16">
@@ -96,14 +81,7 @@ Example: 'Is it morally acceptable to sacrifice one life to save many?' or 'Shou
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="vox-footer">
-        <div className="vox-container text-center py-8">
-          <p className="text-sm">
-            &ldquo;In certamine veritas&rdquo; - In competition, truth
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
