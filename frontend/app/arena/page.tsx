@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
+import { useState } from "react";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 export default function Arena() {
-  const [debateTopic, setDebateTopic] = useState('');
+  const [debateTopic, setDebateTopic] = useState("");
 
   const handleStartDebate = () => {
     if (debateTopic.trim()) {
       // TODO: Implement debate start logic
-      console.log('Starting debate with topic:', debateTopic);
+      console.log("Starting debate with topic:", debateTopic);
     }
   };
 
@@ -28,17 +28,18 @@ export default function Arena() {
                 <span className="text-3xl">⚔️</span>
               </div>
             </div>
-            
+
             <h1 className="vox-title-large mb-6">
               The <span className="vox-text-accent">Arena</span>
             </h1>
-            
+
             <p className="vox-subtitle mb-4">
               &ldquo;Veritas vos liberabit&rdquo;
             </p>
             <p className="vox-description">
-              Enter your philosophical question or ethical dilemma. Watch as AI gladiators engage in intellectual combat, 
-              wielding logic and reason as their weapons.
+              Enter your philosophical question or ethical dilemma. Watch as AI
+              gladiators engage in intellectual combat, wielding logic and
+              reason as their weapons.
             </p>
           </div>
 
@@ -69,12 +70,15 @@ Example: 'Is it morally acceptable to sacrifice one life to save many?' or 'Shou
                 onClick={handleStartDebate}
                 disabled={!debateTopic.trim()}
                 className={`px-12 py-4 text-xl font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg font-roman
-                  ${debateTopic.trim() 
-                    ? 'vox-btn-primary' 
-                    : 'bg-stone-400 dark:bg-stone-600 text-stone-200 dark:text-stone-400 cursor-not-allowed'
+                  ${
+                    debateTopic.trim()
+                      ? "vox-btn-primary"
+                      : "bg-stone-400 dark:bg-stone-600 text-stone-200 dark:text-stone-400 cursor-not-allowed"
                   }`}
               >
-                {debateTopic.trim() ? '⚔️ Start Debate' : 'Enter a Topic to Begin'}
+                {debateTopic.trim()
+                  ? "⚔️ Start Debate"
+                  : "Enter a Topic to Begin"}
               </button>
             </div>
           </div>
