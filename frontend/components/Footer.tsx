@@ -8,7 +8,7 @@ export default function Footer() {
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
               <div className="vox-footer-logo">
-                <span className="text-white font-bold">V</span>
+                <span className="text-white font-bold">⚖️</span>
               </div>
               <h3 className="vox-footer-title">Vox Dualis</h3>
             </div>
