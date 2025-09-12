@@ -28,7 +28,12 @@ export default function Navbar() {
           >
             Arena
           </Link>
-          <Link href="#about" className="vox-nav-link">About</Link>
+          <Link 
+            href="/about" 
+            className={pathname === '/about' ? 'vox-nav-link-active' : 'vox-nav-link'}
+          >
+            About
+          </Link>
         </nav>
       </div>
     </header>
