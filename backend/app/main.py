@@ -50,7 +50,7 @@ class DebateAgent:
     async def generate_argument(self, topic: str, context: str = "") -> str:
         try:
             prompt = f"""
-            You are {self.role} - a master rhetorician in the ancient Roman Senate of Vox Dualis.
+            You are {self.role} - a world-renowned expert debater and public intellectual.
             {self.personality}
             
             DEBATE TOPIC: {topic}
@@ -88,9 +88,9 @@ class DebateAgent:
 pro_agent = DebateAgent(
     GEMINI_API_KEY_1, 
     "Marcus Advocatus - The Visionary Champion",
-    """You are the most persuasive advocate in Rome. You see the transformative potential in every idea.
-    You have access to cutting-edge research, success stories, and visionary insights.
-    You speak with the passion of someone who has witnessed the positive change firsthand.""",
+    """You are one of the world's most persuasive advocates and thought leaders. You see the transformative potential in every idea.
+    You have access to cutting-edge research, success stories, and visionary insights from global institutions.
+    You speak with the passion of someone who has witnessed positive change firsthand and understands how progress happens.""",
     """
     ARGUMENT STRATEGY FOR PRO POSITION:
     - Lead with shocking statistics or breakthrough examples that prove your point
@@ -115,9 +115,9 @@ pro_agent = DebateAgent(
 con_agent = DebateAgent(
     GEMINI_API_KEY_2,
     "Gaius Contradictor - The Ruthless Realist", 
-    """You are the Senate's most feared debater - the one who exposes uncomfortable truths.
-    You have investigated every failure, every unintended consequence, every hidden cost.
-    You speak with the authority of someone who has seen promising ideas crash and burn.""",
+    """You are one of the world's most feared debaters and critical thinkers - the expert who exposes uncomfortable truths.
+    You have investigated every failure, every unintended consequence, every hidden cost across industries and policies.
+    You speak with the authority of someone who has seen promising ideas crash and burn, and who values caution over optimism.""",
     """
     ARGUMENT STRATEGY FOR CON POSITION:
     - Open with a devastating example of failure or unintended consequences
@@ -141,9 +141,9 @@ con_agent = DebateAgent(
 mediator_agent = DebateAgent(
     GEMINI_API_KEY_3,
     "Lucius Moderator - The Truth Seeker",
-    """You are the wisest judge in the Senate - incorruptible and brilliant.
-    You see through rhetoric to find truth. You have studied both sides extensively.
-    You speak with the authority of someone who values evidence over emotion.""",
+    """You are one of the world's most respected judges and analytical minds - incorruptible and brilliant.
+    You see through rhetoric to find truth. You have studied both sides of countless debates extensively.
+    You speak with the authority of someone who values evidence over emotion and seeks objective truth above all.""",
     """
     MEDIATION STRATEGY:
     - Fact-check specific claims made by both sides with source verification
@@ -193,9 +193,9 @@ async def generate_debate(request: DebateRequest):
             raise HTTPException(status_code=400, detail="Topic cannot be empty")
         # Enhanced prompts for more compelling arguments
         enhanced_topic_context = f"""
-        DEBATE MODERATOR BRIEFING: The citizens of Rome gather to hear arguments on: "{topic}"
+        DEBATE MODERATOR BRIEFING: A distinguished audience gathers to hear expert arguments on: "{topic}"
         
-        This is not academic exercise - real decisions hang in the balance.
+        This is not an academic exercise - real decisions hang in the balance.
         The audience includes skeptics, believers, and undecided citizens who need CONVINCING EVIDENCE WITH SOURCES.
         
         Each speaker has 300 words to change minds and shape the future.
@@ -217,7 +217,7 @@ async def generate_debate(request: DebateRequest):
         # Generate mediator analysis based on both arguments
         # Enhanced mediator analysis with fact-checking focus
         mediator_context = f"""
-        JUDGE'S CHAMBERS - CRITICAL ANALYSIS REQUIRED
+        EXPERT ANALYSIS CHAMBERS - CRITICAL REVIEW REQUIRED
         
         Topic: {topic}
         
@@ -242,11 +242,11 @@ async def generate_debate(request: DebateRequest):
         )
         
         # Create a compelling summary that emphasizes the gravity
-        summary = f"""🏛 The Roman Senate has heard passionate testimony on '{topic}'. 
+        summary = f"""� The expert panel has heard passionate testimony on '{topic}'. 
         
         Marcus Advocatus painted a vision of progress and opportunity, while Gaius Contradictor exposed hidden dangers and costs. Lucius Moderator has weighed the evidence with impartial wisdom.
         
-        The decision now rests with you, citizen. Choose wisely - the future may depend on it."""
+        The decision now rests with you. Choose wisely - the future may depend on it."""
         return DebateResponse(
             topic=topic,
             pro_argument=pro_argument,
@@ -298,7 +298,7 @@ async def generate_intense_debate(request: IntenseDebateRequest):
         ultra_enhanced_context = f"""
         🚨 {modifier['urgency']} ALERT 🚨
         
-        SENATE EMERGENCY SESSION ON: "{topic}"
+        EXPERT PANEL EMERGENCY SESSION ON: "{topic}"
         
         {modifier['stakes']}. This is NOT theoretical - real consequences await.
         
@@ -323,7 +323,7 @@ async def generate_intense_debate(request: IntenseDebateRequest):
         
         # Ultra-detailed mediator analysis
         ultra_mediator_context = f"""
-        🏛 SUPREME COURT OF LOGIC - FINAL JUDGMENT REQUIRED
+        🏛 EXPERT ANALYSIS TRIBUNAL - FINAL JUDGMENT REQUIRED
         
         Topic: {topic}
         Intensity Level: {intensity.upper()}
@@ -334,7 +334,7 @@ async def generate_intense_debate(request: IntenseDebateRequest):
         DEFENSE (CON) PRESENTED:
         {con_argument}
         
-        Your Honor, the people demand TRUTH. Dissect every claim with forensic precision:
+        Distinguished analyst, the people demand TRUTH. Dissect every claim with forensic precision:
         
         1. FACT-CHECK: Which specific claims can be independently verified?
         2. SOURCE VERIFICATION: Are the cited sources credible, current, and accurately represented?
@@ -354,17 +354,17 @@ async def generate_intense_debate(request: IntenseDebateRequest):
         )
         
         # Epic summary
-        summary = f"""⚔ GLADIATORIAL DEBATE COMPLETE ⚔
+        summary = f"""🎯 EXPERT DEBATE ANALYSIS COMPLETE 🎯
         
-        The greatest minds in Rome have clashed over '{topic}' with devastating force.
+        The world's leading experts have clashed over '{topic}' with devastating intellectual force.
         
-        Marcus Advocatus wielded the sword of progress and possibility.
-        Gaius Contradictor unleashed the shield of caution and consequence.
-        Lucius Moderator has weighed their souls on the scales of truth.
+        Marcus Advocatus wielded the power of progress and possibility.
+        Gaius Contradictor unleashed the reality of caution and consequence.
+        Lucius Moderator has weighed their arguments on the scales of truth.
         
-        The arena falls silent. The decision is yours, but choose knowing that history will judge your wisdom.
+        The floor falls silent. The decision is yours, but choose knowing that history will judge your wisdom.
         
-        May the gods favor the righteous. 🏛"""
+        May evidence guide your decision. �"""
         
         return DebateResponse(
             topic=topic,
