@@ -20,16 +20,7 @@ FRONTEND_URLS = os.getenv("FRONTEND_URLS").split(",")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-<<<<<<< HEAD
-    allow_origins=[
-        "http://localhost:3000",  # Local development
-        "https://*.vercel.app",   # Vercel deployments
-        "https://*.railway.app",  # Railway deployments
-        "https://*.netlify.app",  # Netlify deployments
-    ],
-=======
     allow_origins=FRONTEND_URLS,
->>>>>>> 877005a83294504b1944e18f9226dff28a342ed3
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,7 +40,7 @@ genai.configure(api_key=GEMINI_API_KEY_1)
 pro_model = genai.GenerativeModel("gemini-1.5-flash")
 
 class DebateAgent:
-    def _init_(self, api_key: str, role: str, personality: str, argument_style: str):
+    def __init__(self, api_key: str, role: str, personality: str, argument_style: str):
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel("gemini-1.5-flash")
         self.role = role
@@ -74,11 +65,18 @@ class DebateAgent:
             5. Anticipate and preemptively counter obvious objections
             6. Make your argument so compelling that fence-sitters will be swayed
             7. Structure: Hook → Evidence → Logic → Emotional Appeal → Call to Action
+            8. **MANDATORY: Cite specific sources for your claims using this format:**
+               - [Source: Organization/Study Name, Year] for statistics
+               - [Source: "Quote from Expert Name, Title, Institution"] for expert opinions
+               - [Source: Historical Event/Case Study Name] for examples
+               - [Source: Research Paper/Report Title] for studies
             
             {f"PREVIOUS DEBATE CONTEXT TO BUILD UPON: {context}" if context else ""}
             
-           Your argument must be 250-300 words of pure persuasive power. Make every sentence count.
+            Your argument must be 250-300 words of pure persuasive power with CREDIBLE SOURCES.
+            Every major claim must have a source citation. Make every sentence count.
             Begin with a powerful opening statement that immediately grabs attention.
+            End with a "Sources Referenced:" section listing your citations.
             """
             
             response = self.model.generate_content(prompt)
@@ -96,19 +94,21 @@ pro_agent = DebateAgent(
     """
     ARGUMENT STRATEGY FOR PRO POSITION:
     - Lead with shocking statistics or breakthrough examples that prove your point
-    - Cite specific case studies, research papers, or real-world success stories
+    - Cite specific case studies, research papers, or real-world success stories WITH SOURCES
     - Paint a vivid picture of the positive future this stance creates
     - Use urgency: "We cannot afford to wait" or "History will judge us"
-    - Address the cost of inaction with concrete examples
+    - Address the cost of inaction with concrete examples and citations
     - End with an inspiring vision that makes opposing seem foolish
     
-    EVIDENCE TYPES TO USE:
-    - Economic data and ROI figures
-    - Scientific studies and peer-reviewed research
-    - Historical precedents and success stories
-    - Expert testimonials and quotes
-    - Technological breakthroughs and innovations
-    - Social impact metrics and case studies
+    EVIDENCE TYPES TO USE (WITH MANDATORY CITATIONS):
+    - Economic data and ROI figures [Source: World Bank, IMF, Government Reports]
+    - Scientific studies and peer-reviewed research [Source: Nature, Science, specific journals]
+    - Historical precedents and success stories [Source: Historical events, case studies]
+    - Expert testimonials and quotes [Source: "Expert Name, Title, Institution"]
+    - Technological breakthroughs and innovations [Source: Company reports, tech studies]
+    - Social impact metrics and case studies [Source: NGO reports, social research]
+    
+    CITATION REQUIREMENT: Every major statistic, claim, or example MUST include a source.
     """
 )
 
@@ -121,19 +121,21 @@ con_agent = DebateAgent(
     """
     ARGUMENT STRATEGY FOR CON POSITION:
     - Open with a devastating example of failure or unintended consequences
-    - Expose hidden costs, risks, or negative externalities with hard data
+    - Expose hidden costs, risks, or negative externalities with hard data AND SOURCES
     - Reveal who really benefits vs. who pays the price
-    - Use fear of real, documented dangers
-    - Show how similar initiatives have failed catastrophically
+    - Use fear of real, documented dangers with citations
+    - Show how similar initiatives have failed catastrophically with specific examples
     - Highlight the safer, proven alternative approach
     
-    EVIDENCE TYPES TO USE:
-    - Failure case studies and cautionary tales
-    - Risk assessment data and safety statistics
-    - Economic burden and cost-benefit analyses
-    - Regulatory warnings and expert concerns
-    - Historical disasters and lessons learned
-    - Victims' testimonials and impact studies
+    EVIDENCE TYPES TO USE (WITH MANDATORY CITATIONS):
+    - Failure case studies and cautionary tales [Source: Historical records, case studies]
+    - Risk assessment data and safety statistics [Source: Safety agencies, regulatory bodies]
+    - Economic burden and cost-benefit analyses [Source: Economic research, government data]
+    - Regulatory warnings and expert concerns [Source: "Expert Name, Agency, Date"]
+    - Historical disasters and lessons learned [Source: Historical events, investigations]
+    - Victims' testimonials and impact studies [Source: Victim advocacy groups, research]
+    
+    CITATION REQUIREMENT: Every warning, statistic, or failure example MUST include a source.
     """)
 
 mediator_agent = DebateAgent(
@@ -144,21 +146,25 @@ mediator_agent = DebateAgent(
     You speak with the authority of someone who values evidence over emotion.""",
     """
     MEDIATION STRATEGY:
-    - Fact-check specific claims made by both sides
+    - Fact-check specific claims made by both sides with source verification
     - Identify logical fallacies and weak reasoning
     - Highlight the strongest point from each argument
     - Reveal what both sides are NOT telling you
-    - Provide missing context or nuance
+    - Provide missing context or nuance with additional sources
     - Suggest synthesis or middle-ground solutions
     - Point out areas where more evidence is needed
+    - Verify the credibility and accuracy of cited sources
     
     ANALYSIS FRAMEWORK:
-    - Verify factual claims and statistics
-    - Assess the quality and relevance of evidence
+    - Verify factual claims and statistics against reliable sources
+    - Assess the quality and relevance of evidence and citations
     - Identify emotional manipulation vs. logical reasoning
     - Highlight confirmation bias or cherry-picking
-    - Suggest additional perspectives to consider
-    - Rate the overall strength of each position
+    - Check if sources are credible, current, and relevant
+    - Suggest additional perspectives to consider with source recommendations
+    - Rate the overall strength of each position based on source quality
+    
+    CITATION VERIFICATION: Check if the sources cited are legitimate and accurately represented.
     """)
 
 # Pydantic models
@@ -190,13 +196,16 @@ async def generate_debate(request: DebateRequest):
         DEBATE MODERATOR BRIEFING: The citizens of Rome gather to hear arguments on: "{topic}"
         
         This is not academic exercise - real decisions hang in the balance.
-        The audience includes skeptics, believers, and undecided citizens who need CONVINCING EVIDENCE.
+        The audience includes skeptics, believers, and undecided citizens who need CONVINCING EVIDENCE WITH SOURCES.
         
         Each speaker has 300 words to change minds and shape the future.
-        Arguments must be backed by facts, examples, and compelling logic.
-        Weak reasoning will be immediately exposed and ridiculed.
+        Arguments must be backed by facts, examples, compelling logic, AND CREDIBLE SOURCES.
+        Weak reasoning or unsourced claims will be immediately exposed and ridiculed.
         
-        THE STAKES ARE HIGH. MAKE YOUR CASE COUNT.
+        MANDATORY: Every major claim must include a source citation using this format:
+        [Source: Organization/Study, Year] or [Source: "Expert Name, Title"]
+        
+        THE STAKES ARE HIGH. MAKE YOUR CASE COUNT WITH PROOF.
         """
         
         # Generate arguments concurrently for efficiency
@@ -219,9 +228,12 @@ async def generate_debate(request: DebateRequest):
         {con_argument}
         
         Your task: Dissect these arguments with surgical precision.
-        Which claims can be verified? Which are opinion masquerading as fact?
+        Which claims can be verified? Which sources are credible and current?
+        Are the citations legitimate and accurately represented?
         What evidence is missing? What logical fallacies were used?
-        Who made the stronger case based on EVIDENCE, not rhetoric?
+        Who made the stronger case based on EVIDENCE AND SOURCE QUALITY, not rhetoric?
+        
+        Verify each source cited and assess its credibility and relevance.
         """
         
         mediator_analysis = await mediator_agent.generate_argument(
@@ -293,13 +305,14 @@ async def generate_intense_debate(request: IntenseDebateRequest):
         SPEAKER REQUIREMENTS:
         - {modifier['evidence_requirement']}
         - Deliver {modifier['word_count']}
-        - Every claim must be VERIFIABLE and DEVASTATING to opponents
-        - Use emotional appeals backed by HARD DATA
+        - Every claim must be VERIFIABLE with CREDIBLE SOURCES and DEVASTATING to opponents
+        - Use emotional appeals backed by HARD DATA and CITATIONS
         - Make fence-sitters feel STUPID for not choosing your side
         - This argument could be quoted in history books
+        - MANDATORY: Include source citations for all major claims using [Source: Name, Year] format
         
         The audience includes world leaders, scientists, economists, and skeptics.
-        WEAK ARGUMENTS WILL BE DESTROYED. BRING YOUR A-GAME.
+        WEAK ARGUMENTS OR MISSING SOURCES WILL BE DESTROYED. BRING YOUR A-GAME WITH PROOF.
         """
         
         # Generate ultra-compelling arguments
@@ -324,13 +337,15 @@ async def generate_intense_debate(request: IntenseDebateRequest):
         Your Honor, the people demand TRUTH. Dissect every claim with forensic precision:
         
         1. FACT-CHECK: Which specific claims can be independently verified?
-        2. LOGIC TEST: What reasoning errors or fallacies were committed?
-        3. EVIDENCE QUALITY: How strong is the supporting data?
-        4. HIDDEN AGENDA: What are they NOT telling us?
-        5. REAL-WORLD IMPACT: What actually happens if we follow each path?
-        6. VERDICT: Based purely on evidence and logic, which case is stronger?
+        2. SOURCE VERIFICATION: Are the cited sources credible, current, and accurately represented?
+        3. LOGIC TEST: What reasoning errors or fallacies were committed?
+        4. EVIDENCE QUALITY: How strong is the supporting data and citation quality?
+        5. HIDDEN AGENDA: What are they NOT telling us?
+        6. MISSING SOURCES: What claims lack proper citation?
+        7. REAL-WORLD IMPACT: What actually happens if we follow each path?
+        8. VERDICT: Based purely on evidence, source quality, and logic, which case is stronger?
         
-        Deliver 350-400 words of surgical analysis that reveals the TRUTH.
+        Deliver 350-400 words of surgical analysis that reveals the TRUTH and verifies sources.
         """
         
         mediator_analysis = await mediator_agent.generate_argument(

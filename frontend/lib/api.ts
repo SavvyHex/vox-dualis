@@ -104,6 +104,15 @@ export function convertToMessages(debateResponse: DebateResponse, roundNumber: n
     round: roundNumber,
   });
 
+  // Add mediator analysis
+  messages.push({
+    id: baseId + 3,
+    speaker: "mediator",
+    message: debateResponse.mediator_analysis,
+    timestamp: new Date(),
+    round: roundNumber,
+  });
+
   return messages;
 }
 

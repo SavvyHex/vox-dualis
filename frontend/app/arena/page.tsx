@@ -4,6 +4,7 @@ import { useState } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ConnectionStatus from "../../components/ConnectionStatus";
+import DebateMessageComponent from "../../components/DebateMessage";
 import { generateDebate, convertToMessages, formatErrorMessage, type DebateMessage } from "../../lib/api";
 
 export default function Arena() {
@@ -41,8 +42,13 @@ export default function Arena() {
       
       setTimeout(() => {
         setMessages((prev) => [...prev, newMessages[1]]);
-        setIsRoundInProgress(false);
-        setIsLoading(false);
+        
+        // Add mediator analysis after both arguments
+        setTimeout(() => {
+          setMessages((prev) => [...prev, newMessages[2]]);
+          setIsRoundInProgress(false);
+          setIsLoading(false);
+        }, 1500);
       }, 1500);
       
     } catch (err) {
@@ -75,11 +81,13 @@ export default function Arena() {
                 The Arena - Round {roundNumber}
               </h1>
               <p className="text-stone-300 font-serif text-lg">
-                Here is the debate arena, where your AI gladiators clash. The{" "}
-                <span className="text-green-600 italic">For</span> side argues
-                in favor of the topic, while the{" "}
-                <span className="text-amber-600 italic">Against</span> side
-                presents counterarguments. Both sides will be able to read each
+                Here is the debate arena, where your AI gladiators clash. 
+                <span className="text-green-400 italic font-semibold"> Marcus Advocatus</span> argues
+                in favor of the topic, while 
+                <span className="text-amber-400 italic font-semibold"> Gaius Contradictor </span>
+                presents counterarguments, with 
+                <span className="text-blue-400 italic font-semibold"> Lucius Moderator </span>
+                providing impartial analysis. All sides will be able to read each
                 other&#39;s arguments and respond accordingly.
               </p>
             </div>
@@ -144,49 +152,44 @@ export default function Arena() {
                       className={`flex ${
                         message.speaker === "for"
                           ? "justify-start"
-                          : "justify-end"
+                          : message.speaker === "against"
+                          ? "justify-end"
+                          : "justify-center"
                       }`}
                     >
                       <div
-                        className={`max-w-[70%] ${
+                        className={`${
+                          message.speaker === "mediator" 
+                            ? "max-w-[85%]" 
+                            : "max-w-[70%]"
+                        } ${
                           message.speaker === "for" ? "order-1" : "order-2"
                         }`}
                       >
                         {/* Speaker Label */}
                         <div
-                          className={`text-xs font-medium mb-1 ${
+                          className={`text-sm font-medium mb-1 ${
                             message.speaker === "for"
                               ? "text-green-400 text-left"
-                              : "text-red-400 text-right"
+                              : message.speaker === "against"
+                              ? "text-red-400 text-right"
+                              : "text-blue-400 text-center"
                           }`}
                         >
-                          {message.speaker === "for" ? "🛡️ For" : "⚔️ Against"}
+                          {message.speaker === "for" 
+                            ? "🛡️ Marcus Advocatus" 
+                            : message.speaker === "against"
+                            ? "⚔️ Gaius Contradictor" 
+                            : "🏛️ Lucius Moderator"
+                          }
                         </div>
 
-                        {/* Message Bubble */}
-                        <div
-                          className={`rounded-2xl px-4 py-3 ${
-                            message.speaker === "for"
-                              ? "bg-green-600 text-white rounded-bl-sm"
-                              : "bg-amber-600 text-white rounded-br-sm"
-                          }`}
-                        >
-                          <p className="font-serif text-sm leading-relaxed">
-                            {message.message}
-                          </p>
-                          <div
-                            className={`text-xs opacity-70 mt-2 ${
-                              message.speaker === "for"
-                                ? "text-left"
-                                : "text-right"
-                            }`}
-                          >
-                            {message.timestamp.toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </div>
-                        </div>
+                        {/* Message Bubble with improved formatting */}
+                        <DebateMessageComponent
+                          message={message.message}
+                          speaker={message.speaker}
+                          timestamp={message.timestamp}
+                        />
                       </div>
                     </div>
                   ))}

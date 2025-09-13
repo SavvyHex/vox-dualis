@@ -440,3 +440,54 @@ body {
   scrollbar-width: thin;
   scrollbar-color: #f59e0b rgba(68, 64, 60, 0.5);
 }
+
+/* Citation Formatting Styles */
+.inline-citation {
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-weight: 500;
+  margin: 0 1px;
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.source-item {
+  padding: 2px 0;
+  border-left: 2px solid rgba(255, 255, 255, 0.3);
+  padding-left: 8px;
+  margin: 2px 0;
+  font-style: italic;
+  position: relative;
+}
+
+.source-item:before {
+  content: "• ";
+  font-weight: bold;
+  margin-right: 4px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Debate message specific styles */
+.debate-sources-section {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.debate-sources-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.debate-sources-list {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  opacity: 0.85;
+}
