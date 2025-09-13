@@ -3,13 +3,8 @@
 import { useState } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-
-interface DebateMessage {
-  id: number;
-  speaker: "for" | "against";
-  message: string;
-  timestamp: Date;
-}
+import ConnectionStatus from "../../components/ConnectionStatus";
+import { generateDebate, convertToMessages, formatErrorMessage, type DebateMessage } from "../../lib/api";
 
 export default function Arena() {
   const [debateTopic, setDebateTopic] = useState("");
@@ -17,47 +12,53 @@ export default function Arena() {
   const [messages, setMessages] = useState<DebateMessage[]>([]);
   const [isRoundInProgress, setIsRoundInProgress] = useState(false);
   const [roundNumber, setRoundNumber] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleStartDebate = () => {
+  const handleStartDebate = async () => {
     if (debateTopic.trim()) {
       setIsDebateStarted(true);
       setRoundNumber(1);
-      startNextRound();
+      setError(null);
+      await startNextRound();
     }
   };
 
-  const startNextRound = () => {
+  const startNextRound = async () => {
     setIsRoundInProgress(true);
+    setIsLoading(true);
+    setError(null);
 
-    // First message is always "for", second is "against"
-    setTimeout(() => {
-      const forMessage: DebateMessage = {
-        id: messages.length + 1,
-        speaker: "for",
-        message: "Hi",
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, forMessage]);
-
-      // Add "against" response after a delay
+    try {
+      // Call the backend API to generate the debate
+      const debateResponse = await generateDebate(debateTopic);
+      
+      // Convert the response to messages format
+      const newMessages = convertToMessages(debateResponse, roundNumber, messages.length);
+      
+      // Add messages with a slight delay to simulate conversation
+      setMessages((prev) => [...prev, newMessages[0]]);
+      
       setTimeout(() => {
-        const againstMessage: DebateMessage = {
-          id: messages.length + 2,
-          speaker: "against",
-          message: "Hi",
-          timestamp: new Date(),
-        };
-
-        setMessages((prev) => [...prev, againstMessage]);
+        setMessages((prev) => [...prev, newMessages[1]]);
         setIsRoundInProgress(false);
+        setIsLoading(false);
       }, 1500);
-    }, 1000);
+      
+    } catch (err) {
+      const errorMessage = formatErrorMessage(err);
+      setError(errorMessage);
+      setIsRoundInProgress(false);
+      setIsLoading(false);
+      
+      // Show a fallback message if there's an error
+      console.error("Debate generation failed:", err);
+    }
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     setRoundNumber((prev) => prev + 1);
-    startNextRound();
+    await startNextRound();
   };
 
   if (isDebateStarted) {
@@ -103,10 +104,37 @@ export default function Arena() {
                       </h3>
                     </div>
                   </div>
-                  <div className="text-stone-400 text-sm">
-                    Round {roundNumber}
+                  <div className="flex flex-col items-end space-y-2">
+                    <div className="text-stone-400 text-sm">
+                      Round {roundNumber}
+                    </div>
+                    <ConnectionStatus />
                   </div>
                 </div>
+
+                {/* Error Display */}
+                {error && (
+                  <div className="mb-4 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
+                    <div className="flex items-start space-x-2">
+                      <span className="text-red-400 text-lg">⚠️</span>
+                      <div>
+                        <p className="text-red-400 font-medium">Debate Generation Failed</p>
+                        <p className="text-red-300 text-sm mt-1">{error}</p>
+                        <button
+                          onClick={() => {
+                            setError(null);
+                            if (isDebateStarted && messages.length === 0) {
+                              startNextRound();
+                            }
+                          }}
+                          className="mt-2 px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-xs rounded transition-colors"
+                        >
+                          Try Again
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Messages Container */}
                 <div className="space-y-4 min-h-[400px] max-h-[500px] overflow-y-auto mb-6 px-2 vox-scrollbar">
@@ -165,13 +193,13 @@ export default function Arena() {
 
                   {/* Thinking Indicator */}
                   {isRoundInProgress && (
-                    <div className="flex justify-start">
+                    <div className="flex justify-center">
                       <div className="max-w-[70%]">
-                        <div className="text-xs font-medium mb-1 text-green-400 text-left">
-                          🛡️ For
+                        <div className="text-xs font-medium mb-1 text-amber-400 text-center">
+                          🏛️ Senate in Session
                         </div>
-                        <div className="bg-green-600 rounded-2xl rounded-bl-sm px-4 py-3">
-                          <div className="flex items-center space-x-1">
+                        <div className="bg-amber-600 rounded-2xl px-4 py-3">
+                          <div className="flex items-center justify-center space-x-1">
                             <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
                             <div
                               className="w-2 h-2 bg-white rounded-full animate-bounce"
@@ -182,35 +210,13 @@ export default function Arena() {
                               style={{ animationDelay: "0.2s" }}
                             ></div>
                           </div>
+                          <p className="text-white text-xs text-center mt-2">
+                            {isLoading ? "Generating arguments..." : "Debaters are thinking..."}
+                          </p>
                         </div>
                       </div>
                     </div>
                   )}
-
-                  {isRoundInProgress &&
-                    messages.length > 0 &&
-                    messages.length % 2 === 1 && (
-                      <div className="flex justify-end">
-                        <div className="max-w-[70%]">
-                          <div className="text-xs font-medium mb-1 text-red-400 text-right">
-                            ⚔️ Against
-                          </div>
-                          <div className="bg-amber-600 rounded-2xl rounded-br-sm px-4 py-3">
-                            <div className="flex items-center space-x-1">
-                              <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                              <div
-                                className="w-2 h-2 bg-white rounded-full animate-bounce"
-                                style={{ animationDelay: "0.1s" }}
-                              ></div>
-                              <div
-                                className="w-2 h-2 bg-white rounded-full animate-bounce"
-                                style={{ animationDelay: "0.2s" }}
-                              ></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
                 </div>
               </div>
             </div>
@@ -235,6 +241,9 @@ export default function Arena() {
                   setMessages([]);
                   setRoundNumber(0);
                   setDebateTopic("");
+                  setError(null);
+                  setIsLoading(false);
+                  setIsRoundInProgress(false);
                 }}
                 className="ml-4 px-6 py-3 text-lg font-bold rounded-lg bg-stone-600 text-stone-200 hover:bg-stone-500 transition-all duration-300 font-roman"
               >
@@ -300,7 +309,7 @@ Example: 'Is it morally acceptable to sacrifice one life to save many?' or 'Shou
             </div>
 
             {/* Start Debate Button */}
-            <div className="text-center">
+            <div className="text-center space-y-4">
               <button
                 onClick={handleStartDebate}
                 disabled={!debateTopic.trim()}
@@ -315,6 +324,11 @@ Example: 'Is it morally acceptable to sacrifice one life to save many?' or 'Shou
                   ? "⚔️ Start Debate"
                   : "Enter a Topic to Begin"}
               </button>
+              
+              {/* Connection Status */}
+              <div className="flex justify-center">
+                <ConnectionStatus />
+              </div>
             </div>
           </div>
         </div>

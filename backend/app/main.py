@@ -14,15 +14,22 @@ load_dotenv()
 # Initialize FastAPI app
 app = FastAPI(title="Vox Dualis - Ethical Debate Arena", version="1.0.0")
 
+# Get frontend URLs from environment (for flexible deployment)
+FRONTEND_URLS = os.getenv("FRONTEND_URLS").split(",")
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
+<<<<<<< HEAD
     allow_origins=[
         "http://localhost:3000",  # Local development
         "https://*.vercel.app",   # Vercel deployments
         "https://*.railway.app",  # Railway deployments
         "https://*.netlify.app",  # Netlify deployments
     ],
+=======
+    allow_origins=FRONTEND_URLS,
+>>>>>>> 877005a83294504b1944e18f9226dff28a342ed3
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -355,5 +362,6 @@ async def generate_intense_debate(request: IntenseDebateRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-# To run the app, use the command:
-# uvicorn app.main:app --host   
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
