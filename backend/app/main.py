@@ -77,10 +77,26 @@ class DebateAgent:
             Every major claim must have a source citation. Make every sentence count.
             Begin with a powerful opening statement that immediately grabs attention.
             End with a "Sources Referenced:" section listing your citations.
+            
+            FORMATTING: Use markdown formatting only. For line breaks, use double spaces followed by a newline.
+            DO NOT use HTML tags like <br>, <b>, or <i>. Use markdown syntax instead.
             """
             
             response = self.model.generate_content(prompt)
-            return response.text
+            # Clean up any HTML tags that might be generated
+            clean_text = response.text
+            clean_text = clean_text.replace('<br>', '\n')
+            clean_text = clean_text.replace('<br/>', '\n')
+            clean_text = clean_text.replace('<br />', '\n')
+            clean_text = clean_text.replace('<b>', '**')
+            clean_text = clean_text.replace('</b>', '**')
+            clean_text = clean_text.replace('<i>', '_')
+            clean_text = clean_text.replace('</i>', '_')
+            clean_text = clean_text.replace('<strong>', '**')
+            clean_text = clean_text.replace('</strong>', '**')
+            clean_text = clean_text.replace('<em>', '_')
+            clean_text = clean_text.replace('</em>', '_')
+            return clean_text
         except Exception as e:
             return f"Error generating argument: {str(e)}"
 
@@ -109,6 +125,7 @@ pro_agent = DebateAgent(
     - Social impact metrics and case studies [Source: NGO reports, social research]
     
     CITATION REQUIREMENT: Every major statistic, claim, or example MUST include a source.
+    FORMATTING: Use ONLY markdown formatting. NO HTML tags whatsoever.
     """
 )
 
@@ -136,6 +153,7 @@ con_agent = DebateAgent(
     - Victims' testimonials and impact studies [Source: Victim advocacy groups, research]
     
     CITATION REQUIREMENT: Every warning, statistic, or failure example MUST include a source.
+    FORMATTING: Use ONLY markdown formatting. NO HTML tags whatsoever.
     """)
 
 mediator_agent = DebateAgent(
@@ -236,6 +254,11 @@ async def generate_debate(request: DebateRequest):
         
         REQUIRED OUTPUT FORMAT:
         Use markdown tables to organize your analysis. Structure your response as follows:
+        
+        FORMATTING REQUIREMENTS:
+        - Use ONLY markdown syntax - NO HTML tags like <br>, <b>, <i>
+        - For line breaks within table cells, use double spaces followed by newline
+        - Keep table cell content concise but informative
         
         ## Argument Comparison Summary
         

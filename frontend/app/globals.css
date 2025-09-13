@@ -484,11 +484,13 @@ body {
 /* Markdown content styling for debate messages */
 .markdown-content {
   color: white;
+  font-size: 1.125rem;
 }
 
 .markdown-content p {
   margin-bottom: 0.5rem;
   line-height: 1.6;
+  font-size: 1.125rem;
 }
 
 .markdown-content strong, .markdown-content b {
@@ -569,7 +571,7 @@ body {
   width: 100%;
   border-collapse: collapse;
   margin: 1rem 0;
-  font-size: 0.875rem;
+  font-size: 1rem;
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 0.5rem;
   overflow: hidden;
@@ -680,7 +682,7 @@ body {
 
 @media (max-width: 640px) {
   .markdown-content table {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
   
   .markdown-content table th,
