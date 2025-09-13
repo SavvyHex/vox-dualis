@@ -145,7 +145,7 @@ export default function Arena() {
                 )}
 
                 {/* Messages Container */}
-                <div className="space-y-4 min-h-[400px] max-h-[500px] overflow-y-auto mb-6 px-2 vox-scrollbar">
+                <div className="space-y-4 min-h-[600px] max-h-[800px] overflow-y-auto mb-6 px-2 vox-scrollbar">
                   {messages.map((message) => (
                     <div
                       key={message.id}
