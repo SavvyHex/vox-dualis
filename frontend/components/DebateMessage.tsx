@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface DebateMessageProps {
   message: string;
@@ -64,7 +65,7 @@ const DebateMessage: React.FC<DebateMessageProps> = ({ message, speaker, timesta
     >
       {/* Main content rendered as markdown */}
       <div className="font-serif text-base leading-relaxed prose prose-invert max-w-none markdown-content text-white">
-        <ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {mainContent}
         </ReactMarkdown>
       </div>

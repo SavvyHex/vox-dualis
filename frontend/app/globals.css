@@ -563,3 +563,128 @@ body {
 .markdown-content h4 { font-size: 0.875rem; }
 .markdown-content h5 { font-size: 0.75rem; }
 .markdown-content h6 { font-size: 0.75rem; }
+
+/* Table styling for markdown tables */
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: table;
+  table-layout: fixed;
+}
+
+.markdown-content table thead {
+  background-color: rgba(255, 255, 255, 0.1);
+  display: table-header-group;
+}
+
+.markdown-content table tbody {
+  display: table-row-group;
+}
+
+.markdown-content table tr {
+  display: table-row;
+}
+
+.markdown-content table th,
+.markdown-content table td {
+  padding: 0.75rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  vertical-align: top;
+  display: table-cell;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.markdown-content table th:last-child,
+.markdown-content table td:last-child {
+  border-right: none;
+}
+
+.markdown-content table th {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.markdown-content table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.markdown-content table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Make table responsive but maintain table structure */
+.markdown-content table {
+  display: table;
+  table-layout: fixed;
+  overflow-x: auto;
+}
+
+.markdown-content table thead,
+.markdown-content table tbody {
+  display: table-header-group;
+}
+
+.markdown-content table tbody {
+  display: table-row-group;
+}
+
+.markdown-content table th,
+.markdown-content table td {
+  display: table-cell;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.markdown-content table tr {
+  display: table-row;
+}
+
+/* Set specific column widths */
+.markdown-content table th:first-child,
+.markdown-content table td:first-child {
+  width: 20%;
+  min-width: 100px;
+}
+
+.markdown-content table th:nth-child(2),
+.markdown-content table td:nth-child(2) {
+  width: 25%;
+  min-width: 150px;
+}
+
+.markdown-content table th:nth-child(3),
+.markdown-content table td:nth-child(3) {
+  width: 25%;
+  min-width: 150px;
+}
+
+.markdown-content table th:last-child,
+.markdown-content table td:last-child {
+  width: 30%;
+  min-width: 200px;
+}
+
+@media (max-width: 640px) {
+  .markdown-content table {
+    font-size: 0.75rem;
+  }
+  
+  .markdown-content table th,
+  .markdown-content table td {
+    padding: 0.5rem 0.25rem;
+  }
+}

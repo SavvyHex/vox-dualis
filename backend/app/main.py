@@ -154,6 +154,7 @@ mediator_agent = DebateAgent(
     - Suggest synthesis or middle-ground solutions
     - Point out areas where more evidence is needed
     - Verify the credibility and accuracy of cited sources
+    - Present analysis in a clear tabular format for easy comparison
     
     ANALYSIS FRAMEWORK:
     - Verify factual claims and statistics against reliable sources
@@ -163,6 +164,10 @@ mediator_agent = DebateAgent(
     - Check if sources are credible, current, and relevant
     - Suggest additional perspectives to consider with source recommendations
     - Rate the overall strength of each position based on source quality
+    
+    MANDATORY OUTPUT FORMAT:
+    Structure your analysis using markdown tables to compare arguments side-by-side.
+    Include sections for: Key Claims, Evidence Quality, Logical Strength, Source Credibility, and Final Assessment.
     
     CITATION VERIFICATION: Check if the sources cited are legitimate and accurately represented.
     """)
@@ -227,13 +232,36 @@ async def generate_debate(request: DebateRequest):
         GAIUS CONTRADICTOR countered:
         {con_argument}
         
-        Your task: Dissect these arguments with surgical precision.
-        Which claims can be verified? Which sources are credible and current?
-        Are the citations legitimate and accurately represented?
-        What evidence is missing? What logical fallacies were used?
-        Who made the stronger case based on EVIDENCE AND SOURCE QUALITY, not rhetoric?
+        Your task: Dissect these arguments with surgical precision and present your analysis in a clear tabular format.
         
-        Verify each source cited and assess its credibility and relevance.
+        REQUIRED OUTPUT FORMAT:
+        Use markdown tables to organize your analysis. Structure your response as follows:
+        
+        ## Argument Comparison Summary
+        
+        | Aspect | Marcus Advocatus (PRO) | Gaius Contradictor (CON) |
+        |--------|------------------------|---------------------------|
+        | **Main Claim** | [Summarize key argument] | [Summarize key argument] |
+        | **Key Evidence** | [List 2-3 strongest pieces] | [List 2-3 strongest pieces] |
+        | **Source Quality** | [Rate: High/Medium/Low + reasoning] | [Rate: High/Medium/Low + reasoning] |
+        | **Logical Strength** | [Assess reasoning quality] | [Assess reasoning quality] |
+        | **Weaknesses** | [Identify gaps/flaws] | [Identify gaps/flaws] |
+        
+        ## Evidence Verification
+        | Claim | Source Cited | Credibility Assessment | Accuracy |
+        |-------|--------------|------------------------|-----------|
+        | [Specific claim 1] | [Source name] | [High/Medium/Low] | [Verified/Questionable/False] |
+        | [Specific claim 2] | [Source name] | [High/Medium/Low] | [Verified/Questionable/False] |
+        
+        ## Final Assessment
+        | Category | Winner | Reasoning |
+        |----------|---------|-----------|
+        | **Evidence Quality** | [Marcus/Gaius/Tie] | [Brief explanation] |
+        | **Logical Reasoning** | [Marcus/Gaius/Tie] | [Brief explanation] |
+        | **Source Credibility** | [Marcus/Gaius/Tie] | [Brief explanation] |
+        | **Overall Strength** | [Marcus/Gaius/Tie] | [Comprehensive reasoning] |
+        
+        Provide detailed analysis within each table cell while maintaining clarity and objectivity.
         """
         
         mediator_analysis = await mediator_agent.generate_argument(
@@ -334,18 +362,48 @@ async def generate_intense_debate(request: IntenseDebateRequest):
         DEFENSE (CON) PRESENTED:
         {con_argument}
         
-        Distinguished analyst, the people demand TRUTH. Dissect every claim with forensic precision:
+        Distinguished analyst, the people demand TRUTH. Dissect every claim with forensic precision and present your analysis in comprehensive tabular format.
         
-        1. FACT-CHECK: Which specific claims can be independently verified?
-        2. SOURCE VERIFICATION: Are the cited sources credible, current, and accurately represented?
-        3. LOGIC TEST: What reasoning errors or fallacies were committed?
-        4. EVIDENCE QUALITY: How strong is the supporting data and citation quality?
-        5. HIDDEN AGENDA: What are they NOT telling us?
-        6. MISSING SOURCES: What claims lack proper citation?
-        7. REAL-WORLD IMPACT: What actually happens if we follow each path?
-        8. VERDICT: Based purely on evidence, source quality, and logic, which case is stronger?
+        MANDATORY TABULAR OUTPUT FORMAT:
         
-        Deliver 350-400 words of surgical analysis that reveals the TRUTH and verifies sources.
+        ## COMPREHENSIVE ARGUMENT ANALYSIS
+        
+        | Evaluation Criteria | Marcus Advocatus (PRO) | Gaius Contradictor (CON) | Analysis |
+        |-------------------|------------------------|---------------------------|-----------|
+        | **Primary Argument** | [Core thesis] | [Core thesis] | [Comparative strength] |
+        | **Evidence Quantity** | [# of sources/claims] | [# of sources/claims] | [Which has more support] |
+        | **Evidence Quality** | [Assessment + rating] | [Assessment + rating] | [Which is more credible] |
+        | **Logical Structure** | [Reasoning evaluation] | [Reasoning evaluation] | [Which flows better] |
+        | **Factual Accuracy** | [Verification status] | [Verification status] | [Which is more accurate] |
+        | **Source Credibility** | [Source assessment] | [Source assessment] | [Which uses better sources] |
+        | **Bias Detection** | [Identified biases] | [Identified biases] | [Which is more objective] |
+        | **Missing Context** | [What's not addressed] | [What's not addressed] | [Critical gaps] |
+        
+        ## DETAILED SOURCE VERIFICATION
+        | Claim | Side | Source | Credibility | Accuracy | Notes |
+        |-------|------|--------|-------------|----------|-------|
+        | [Specific claim 1] | PRO/CON | [Source name] | High/Med/Low | ✓/✗/?  | [Comments] |
+        | [Specific claim 2] | PRO/CON | [Source name] | High/Med/Low | ✓/✗/?  | [Comments] |
+        | [Specific claim 3] | PRO/CON | [Source name] | High/Med/Low | ✓/✗/?  | [Comments] |
+        
+        ## LOGICAL FALLACY DETECTION
+        | Fallacy Type | Marcus Advocatus | Gaius Contradictor | Impact |
+        |--------------|------------------|---------------------|---------|
+        | Appeal to Emotion | [Yes/No + example] | [Yes/No + example] | [Effect on argument] |
+        | Cherry Picking | [Yes/No + example] | [Yes/No + example] | [Effect on argument] |
+        | False Dichotomy | [Yes/No + example] | [Yes/No + example] | [Effect on argument] |
+        | Ad Hominem | [Yes/No + example] | [Yes/No + example] | [Effect on argument] |
+        
+        ## FINAL VERDICT
+        | Category | Winner | Score (1-10) | Justification |
+        |----------|---------|---------------|---------------|
+        | **Evidence Quality** | Marcus/Gaius/Tie | [Score] | [Detailed reasoning] |
+        | **Logical Rigor** | Marcus/Gaius/Tie | [Score] | [Detailed reasoning] |
+        | **Source Credibility** | Marcus/Gaius/Tie | [Score] | [Detailed reasoning] |
+        | **Factual Accuracy** | Marcus/Gaius/Tie | [Score] | [Detailed reasoning] |
+        | **Overall Winner** | Marcus/Gaius/Tie | [Total] | [Comprehensive analysis] |
+        
+        Provide thorough analysis within each cell while maintaining objectivity and precision.
         """
         
         mediator_analysis = await mediator_agent.generate_argument(
