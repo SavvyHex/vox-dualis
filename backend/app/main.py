@@ -17,7 +17,12 @@ app = FastAPI(title="Vox Dualis - Ethical Debate Arena", version="1.0.0")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Your frontend URL
+    allow_origins=[
+        "http://localhost:3000",  # Local development
+        "https://*.vercel.app",   # Vercel deployments
+        "https://*.railway.app",  # Railway deployments
+        "https://*.netlify.app",  # Netlify deployments
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,23 +42,36 @@ genai.configure(api_key=GEMINI_API_KEY_1)
 pro_model = genai.GenerativeModel("gemini-1.5-flash")
 
 class DebateAgent:
-    def __init__(self, api_key: str, role: str, personality: str):
+    def _init_(self, api_key: str, role: str, personality: str, argument_style: str):
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel("gemini-1.5-flash")
         self.role = role
         self.personality = personality
+        self.argument_style = argument_style
     
     async def generate_argument(self, topic: str, context: str = "") -> str:
         try:
             prompt = f"""
-            You are {self.role} in the ancient Roman Senate debate arena of Vox Dualis.
+            You are {self.role} - a master rhetorician in the ancient Roman Senate of Vox Dualis.
             {self.personality}
             
-            Topic for debate: {topic}
-            {f"Previous context: {context}" if context else ""}
+            DEBATE TOPIC: {topic}
             
-            Provide a compelling, well-reasoned argument. Keep it concise but powerful.
-            Use classical rhetoric techniques. Maximum 200 words.
+            {self.argument_style}
+            
+            CRITICAL REQUIREMENTS:
+            1. Use SPECIFIC, VERIFIABLE facts, statistics, or historical examples
+            2. Include at least 2-3 concrete pieces of evidence
+            3. Address real-world implications and consequences
+            4. Use powerful, persuasive language that moves the audience
+            5. Anticipate and preemptively counter obvious objections
+            6. Make your argument so compelling that fence-sitters will be swayed
+            7. Structure: Hook → Evidence → Logic → Emotional Appeal → Call to Action
+            
+            {f"PREVIOUS DEBATE CONTEXT TO BUILD UPON: {context}" if context else ""}
+            
+           Your argument must be 250-300 words of pure persuasive power. Make every sentence count.
+            Begin with a powerful opening statement that immediately grabs attention.
             """
             
             response = self.model.generate_content(prompt)
@@ -61,28 +79,87 @@ class DebateAgent:
         except Exception as e:
             return f"Error generating argument: {str(e)}"
 
-# Initialize the three debate agents
+# Initialize the three debate agents with enhanced personalities and argument styles
 pro_agent = DebateAgent(
     GEMINI_API_KEY_1, 
-    "Marcus Advocatus - The Champion",
-    "You argue FOR the given topic with passion and conviction. You are a skilled orator who finds the strongest points in favor of any position. You use persuasive language and compelling examples."
+    "Marcus Advocatus - The Visionary Champion",
+    """You are the most persuasive advocate in Rome. You see the transformative potential in every idea.
+    You have access to cutting-edge research, success stories, and visionary insights.
+    You speak with the passion of someone who has witnessed the positive change firsthand.""",
+    """
+    ARGUMENT STRATEGY FOR PRO POSITION:
+    - Lead with shocking statistics or breakthrough examples that prove your point
+    - Cite specific case studies, research papers, or real-world success stories
+    - Paint a vivid picture of the positive future this stance creates
+    - Use urgency: "We cannot afford to wait" or "History will judge us"
+    - Address the cost of inaction with concrete examples
+    - End with an inspiring vision that makes opposing seem foolish
+    
+    EVIDENCE TYPES TO USE:
+    - Economic data and ROI figures
+    - Scientific studies and peer-reviewed research
+    - Historical precedents and success stories
+    - Expert testimonials and quotes
+    - Technological breakthroughs and innovations
+    - Social impact metrics and case studies
+    """
 )
 
 con_agent = DebateAgent(
     GEMINI_API_KEY_2,
-    "Gaius Contradictor - The Challenger", 
-    "You argue AGAINST the given topic with sharp logic and critical thinking. You identify weaknesses, potential harms, and counterarguments. You are the voice of skepticism and caution."
-)
+    "Gaius Contradictor - The Ruthless Realist", 
+    """You are the Senate's most feared debater - the one who exposes uncomfortable truths.
+    You have investigated every failure, every unintended consequence, every hidden cost.
+    You speak with the authority of someone who has seen promising ideas crash and burn.""",
+    """
+    ARGUMENT STRATEGY FOR CON POSITION:
+    - Open with a devastating example of failure or unintended consequences
+    - Expose hidden costs, risks, or negative externalities with hard data
+    - Reveal who really benefits vs. who pays the price
+    - Use fear of real, documented dangers
+    - Show how similar initiatives have failed catastrophically
+    - Highlight the safer, proven alternative approach
+    
+    EVIDENCE TYPES TO USE:
+    - Failure case studies and cautionary tales
+    - Risk assessment data and safety statistics
+    - Economic burden and cost-benefit analyses
+    - Regulatory warnings and expert concerns
+    - Historical disasters and lessons learned
+    - Victims' testimonials and impact studies
+    """)
 
 mediator_agent = DebateAgent(
     GEMINI_API_KEY_3,
-    "Lucius Moderator - The Wise Judge",
-    "You are the impartial mediator and fact-checker. You identify logical fallacies, check claims for accuracy, and ensure the debate remains civil and productive. You summarize key points fairly."
-)
+    "Lucius Moderator - The Truth Seeker",
+    """You are the wisest judge in the Senate - incorruptible and brilliant.
+    You see through rhetoric to find truth. You have studied both sides extensively.
+    You speak with the authority of someone who values evidence over emotion.""",
+    """
+    MEDIATION STRATEGY:
+    - Fact-check specific claims made by both sides
+    - Identify logical fallacies and weak reasoning
+    - Highlight the strongest point from each argument
+    - Reveal what both sides are NOT telling you
+    - Provide missing context or nuance
+    - Suggest synthesis or middle-ground solutions
+    - Point out areas where more evidence is needed
+    
+    ANALYSIS FRAMEWORK:
+    - Verify factual claims and statistics
+    - Assess the quality and relevance of evidence
+    - Identify emotional manipulation vs. logical reasoning
+    - Highlight confirmation bias or cherry-picking
+    - Suggest additional perspectives to consider
+    - Rate the overall strength of each position
+    """)
 
 # Pydantic models
 class DebateRequest(BaseModel):
     topic: str
+class IntenseDebateRequest(BaseModel):
+    topic: str
+    intensity: str = "high"  # low, medium, high, extreme
 
 class DebateResponse(BaseModel):
     topic: str
@@ -101,20 +178,56 @@ async def generate_debate(request: DebateRequest):
         topic = request.topic.strip()
         if not topic:
             raise HTTPException(status_code=400, detail="Topic cannot be empty")
+        # Enhanced prompts for more compelling arguments
+        enhanced_topic_context = f"""
+        DEBATE MODERATOR BRIEFING: The citizens of Rome gather to hear arguments on: "{topic}"
+        
+        This is not academic exercise - real decisions hang in the balance.
+        The audience includes skeptics, believers, and undecided citizens who need CONVINCING EVIDENCE.
+        
+        Each speaker has 300 words to change minds and shape the future.
+        Arguments must be backed by facts, examples, and compelling logic.
+        Weak reasoning will be immediately exposed and ridiculed.
+        
+        THE STAKES ARE HIGH. MAKE YOUR CASE COUNT.
+        """
         
         # Generate arguments concurrently for efficiency
-        pro_task = pro_agent.generate_argument(topic)
-        con_task = con_agent.generate_argument(topic)
+        pro_task = pro_agent.generate_argument(f"{enhanced_topic_context}\n\nARGUE POWERFULLY FOR: {topic}")
+        con_task = con_agent.generate_argument(f"{enhanced_topic_context}\n\nARGUE RUTHLESSLY AGAINST: {topic}")
         
         pro_argument, con_argument = await asyncio.gather(pro_task, con_task)
         
         # Generate mediator analysis based on both arguments
-        mediator_context = f"Pro argument: {pro_argument}\n\nCon argument: {con_argument}"
-        mediator_analysis = await mediator_agent.generate_argument(topic, mediator_context)
+        # Enhanced mediator analysis with fact-checking focus
+        mediator_context = f"""
+        JUDGE'S CHAMBERS - CRITICAL ANALYSIS REQUIRED
         
-        # Create a summary
-        summary = f"The Senate has heard compelling arguments on '{topic}'. The Champion advocates for the position while the Challenger raises important concerns. The Wise Judge provides balanced analysis for your consideration."
+        Topic: {topic}
         
+        MARCUS ADVOCATUS argued:
+        {pro_argument}
+        
+        GAIUS CONTRADICTOR countered:
+        {con_argument}
+        
+        Your task: Dissect these arguments with surgical precision.
+        Which claims can be verified? Which are opinion masquerading as fact?
+        What evidence is missing? What logical fallacies were used?
+        Who made the stronger case based on EVIDENCE, not rhetoric?
+        """
+        
+        mediator_analysis = await mediator_agent.generate_argument(
+            "FACT-CHECK AND ANALYZE THE DEBATE", 
+            mediator_context
+        )
+        
+        # Create a compelling summary that emphasizes the gravity
+        summary = f"""🏛 The Roman Senate has heard passionate testimony on '{topic}'. 
+        
+        Marcus Advocatus painted a vision of progress and opportunity, while Gaius Contradictor exposed hidden dangers and costs. Lucius Moderator has weighed the evidence with impartial wisdom.
+        
+        The decision now rests with you, citizen. Choose wisely - the future may depend on it."""
         return DebateResponse(
             topic=topic,
             pro_argument=pro_argument,
@@ -129,6 +242,118 @@ async def generate_debate(request: DebateRequest):
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "message": "Vox Dualis backend is running"}
+@app.post("/debate/intense", response_model=DebateResponse)
+async def generate_intense_debate(request: IntenseDebateRequest):
+    """Generate an extremely intense, fact-heavy debate with maximum persuasive power"""
+    try:
+        topic = request.topic.strip()
+        intensity = request.intensity
+        
+        if not topic:
+            raise HTTPException(status_code=400, detail="Topic cannot be empty")
+        
+        # Ultra-enhanced prompts based on intensity
+        intensity_modifiers = {
+            "extreme": {
+                "urgency": "CIVILIZATION-DEFINING CRISIS",
+                "stakes": "The fate of humanity hangs in the balance",
+                "evidence_requirement": "Use SHOCKING statistics, Nobel Prize research, and world-changing examples",
+                "word_count": "400-500 words of devastating persuasion"
+            },
+            "high": {
+                "urgency": "CRITICAL DECISION POINT", 
+                "stakes": "Millions of lives and billions of dollars at stake",
+                "evidence_requirement": "Use concrete data, peer-reviewed studies, and real case studies",
+                "word_count": "300-350 words of compelling evidence"
+            },
+            "medium": {
+                "urgency": "IMPORTANT CHOICE",
+                "stakes": "Significant consequences for society",
+                "evidence_requirement": "Use verified facts, expert opinions, and documented examples", 
+                "word_count": "250-300 words of solid reasoning"
+            }
+        }
+        
+        modifier = intensity_modifiers.get(intensity, intensity_modifiers["high"])
+        
+        ultra_enhanced_context = f"""
+        🚨 {modifier['urgency']} ALERT 🚨
+        
+        SENATE EMERGENCY SESSION ON: "{topic}"
+        
+        {modifier['stakes']}. This is NOT theoretical - real consequences await.
+        
+        SPEAKER REQUIREMENTS:
+        - {modifier['evidence_requirement']}
+        - Deliver {modifier['word_count']}
+        - Every claim must be VERIFIABLE and DEVASTATING to opponents
+        - Use emotional appeals backed by HARD DATA
+        - Make fence-sitters feel STUPID for not choosing your side
+        - This argument could be quoted in history books
+        
+        The audience includes world leaders, scientists, economists, and skeptics.
+        WEAK ARGUMENTS WILL BE DESTROYED. BRING YOUR A-GAME.
+        """
+        
+        # Generate ultra-compelling arguments
+        pro_task = pro_agent.generate_argument(f"{ultra_enhanced_context}\n\nDEFEND WITH YOUR LIFE: {topic}")
+        con_task = con_agent.generate_argument(f"{ultra_enhanced_context}\n\nDESTROY THE CASE FOR: {topic}")
+        
+        pro_argument, con_argument = await asyncio.gather(pro_task, con_task)
+        
+        # Ultra-detailed mediator analysis
+        ultra_mediator_context = f"""
+        🏛 SUPREME COURT OF LOGIC - FINAL JUDGMENT REQUIRED
+        
+        Topic: {topic}
+        Intensity Level: {intensity.upper()}
+        
+        PROSECUTION (PRO) PRESENTED:
+        {pro_argument}
+        
+        DEFENSE (CON) PRESENTED:
+        {con_argument}
+        
+        Your Honor, the people demand TRUTH. Dissect every claim with forensic precision:
+        
+        1. FACT-CHECK: Which specific claims can be independently verified?
+        2. LOGIC TEST: What reasoning errors or fallacies were committed?
+        3. EVIDENCE QUALITY: How strong is the supporting data?
+        4. HIDDEN AGENDA: What are they NOT telling us?
+        5. REAL-WORLD IMPACT: What actually happens if we follow each path?
+        6. VERDICT: Based purely on evidence and logic, which case is stronger?
+        
+        Deliver 350-400 words of surgical analysis that reveals the TRUTH.
+        """
+        
+        mediator_analysis = await mediator_agent.generate_argument(
+            "RENDER SUPREME JUDGMENT", 
+            ultra_mediator_context
+        )
+        
+        # Epic summary
+        summary = f"""⚔ GLADIATORIAL DEBATE COMPLETE ⚔
+        
+        The greatest minds in Rome have clashed over '{topic}' with devastating force.
+        
+        Marcus Advocatus wielded the sword of progress and possibility.
+        Gaius Contradictor unleashed the shield of caution and consequence.
+        Lucius Moderator has weighed their souls on the scales of truth.
+        
+        The arena falls silent. The decision is yours, but choose knowing that history will judge your wisdom.
+        
+        May the gods favor the righteous. 🏛"""
+        
+        return DebateResponse(
+            topic=topic,
+            pro_argument=pro_argument,
+            con_argument=con_argument,
+            mediator_analysis=mediator_analysis,
+            summary=summary
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 # To run the app, use the command:
 # uvicorn app.main:app --host   
