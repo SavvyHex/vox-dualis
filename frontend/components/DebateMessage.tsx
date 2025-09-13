@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 
 interface DebateMessageProps {
   message: string;
@@ -20,12 +21,12 @@ const DebateMessage: React.FC<DebateMessageProps> = ({ message, speaker, timesta
       sourcesSection = sourcesMatch[2].trim();
     }
     
-    // Format inline citations in the main content
+    // Format inline citations in the main content for markdown
     const formatInlineCitations = (content: string) => {
-      // Replace [Source: ...] with formatted citations
+      // Replace [Source: ...] with markdown-style citations that will be styled
       return content.replace(
         /\[Source:\s*([^\]]+)\]/g,
-        '<span class="inline-citation">[$1]</span>'
+        '`[$1]`'
       );
     };
     
@@ -37,22 +38,19 @@ const DebateMessage: React.FC<DebateMessageProps> = ({ message, speaker, timesta
       return sourceLines.map((line) => {
         const trimmedLine = line.trim();
         if (trimmedLine.startsWith('-') || trimmedLine.startsWith('•')) {
-          return `<div class="source-item">${trimmedLine.substring(1).trim()}</div>`;
+          return trimmedLine.substring(1).trim();
         }
-        return `<div class="source-item">${trimmedLine}</div>`;
-      }).join('');
+        return trimmedLine;
+      });
     };
     
-    const formattedMainContent = formatInlineCitations(mainContent);
-    const formattedSources = formatSourcesList(sourcesSection);
-    
     return {
-      mainContent: formattedMainContent,
-      sources: formattedSources
+      mainContent: formatInlineCitations(mainContent),
+      sourcesList: formatSourcesList(sourcesSection) as string[]
     };
   };
   
-  const { mainContent, sources } = formatMessage(message);
+  const { mainContent, sourcesList } = formatMessage(message);
   
   return (
     <div
@@ -64,24 +62,26 @@ const DebateMessage: React.FC<DebateMessageProps> = ({ message, speaker, timesta
           : "bg-blue-600 text-white rounded-lg"
       }`}
     >
-      {/* Main content */}
-      <div 
-        className="font-serif text-base leading-relaxed prose-invert max-w-none"
-        dangerouslySetInnerHTML={{ 
-          __html: mainContent.replace(/\n/g, '<br />') 
-        }}
-      />
+      {/* Main content rendered as markdown */}
+      <div className="font-serif text-base leading-relaxed prose prose-invert max-w-none markdown-content text-white">
+        <ReactMarkdown>
+          {mainContent}
+        </ReactMarkdown>
+      </div>
       
       {/* Sources section */}
-      {sources && (
+      {sourcesList && sourcesList.length > 0 && (
         <div className="debate-sources-section">
           <div className="debate-sources-title">
             📚 Sources Referenced:
           </div>
-          <div 
-            className="debate-sources-list"
-            dangerouslySetInnerHTML={{ __html: sources }}
-          />
+          <div className="debate-sources-list">
+            {sourcesList && sourcesList.length > 0 && sourcesList.map((source: string, index: number) => (
+              <div key={index} className="source-item">
+                {source}
+              </div>
+            ))}
+          </div>
         </div>
       )}
       
