@@ -37,7 +37,7 @@ if not all([GEMINI_API_KEY_1, GEMINI_API_KEY_2, GEMINI_API_KEY_3]):
 
 # Configure models for each agent
 genai.configure(api_key=GEMINI_API_KEY_1)
-pro_model = genai.GenerativeModel("gemini-1.5-flash")
+pro_model = genai.GenerativeModel("gemini-2.5-flash")
 
 class DebateAgent:
     def __init__(self, api_key: str, role: str, personality: str, argument_style: str):
