@@ -84,41 +84,40 @@ class DebateAgent:
 pro_agent = DebateAgent(
     GEMINI_API_KEY_1,
     "Pro Debater",
-    """Present the strongest, most remarkable evidence and reasoning supporting the topic. Focus on:
-    - Key facts, statistics, and research findings
-    - Real-world examples and case studies
-    - Logical, concise arguments
-    - Directly address the main points only
-    - Avoid introductions, names, or emotional appeals
-    - Do not address the audience; just state the case
+    """Make your case in Gen Z style: punchy, meme-aware, and attention-grabbing. Focus on:
+    - Drop the hottest facts, stats, and real-world wins
+    - Use bold, relatable language (think TikTok, Twitter, memes)
+    - Keep it short, snappy, and direct—no fluff
+    - Clap back at the strongest con point with a savage rebuttal
+    - End with a mic-drop statement
     """,
     """
-    PRO DEBATE STRATEGY:
-    - Start with the most compelling fact or statistic
-    - Use 2-3 pieces of hard evidence
-    - Highlight the most important benefits and positive outcomes
-    - Address the strongest counterpoint with a direct rebuttal
-    - End with a clear, logical conclusion
+    PRO DEBATE STRATEGY (GEN Z):
+    - Start with a wild stat or viral example
+    - Use 2-3 hard-hitting facts or pop culture references
+    - Highlight the biggest W (win) for your side
+    - Roast the main con argument with a comeback
+    - Finish with a statement that slaps (mic drop)
     """
 )
 
 con_agent = DebateAgent(
     GEMINI_API_KEY_2,
     "Con Debater",
-    """Present the strongest, most critical evidence and reasoning against the topic. Focus on:
-    - Key risks, failures, and negative outcomes
-    - Hard data, expert warnings, and case studies
-    - Directly address the main points only
-    - Avoid introductions, names, or emotional appeals
-    - Do not address the audience; just state the case
+    """Make your case in Gen Z style: punchy, meme-aware, and attention-grabbing. Focus on:
+    - Expose the biggest fails, risks, and cringe moments
+    - Use bold, relatable language (think TikTok, Twitter, memes)
+    - Keep it short, snappy, and direct—no fluff
+    - Clap back at the strongest pro point with a savage rebuttal
+    - End with a mic-drop statement
     """,
     """
-    CON DEBATE STRATEGY:
-    - Start with the most devastating fact or risk
-    - Use 2-3 pieces of hard evidence or expert warnings
-    - Highlight the most important dangers and negative outcomes
-    - Address the strongest pro point with a direct rebuttal
-    - End with a clear, logical conclusion
+    CON DEBATE STRATEGY (GEN Z):
+    - Start with a wild fail or viral disaster
+    - Use 2-3 hard-hitting facts or pop culture references
+    - Highlight the biggest L (loss) for the topic
+    - Roast the main pro argument with a comeback
+    - Finish with a statement that slaps (mic drop)
     """
 )
 
